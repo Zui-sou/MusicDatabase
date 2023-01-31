@@ -1,7 +1,10 @@
 from sclib import SoundcloudAPI, Playlist
+from datetime import date
 import psycopg2
+import json
 
-playlistLink = str(input(f'Gib Link\n'))
+
+playlistLink = str(input(f'Gib Link\n >> '))
 tableID = str
 playlistName = str
 songCount = int
@@ -26,11 +29,11 @@ with open('loginInfo.txt', "r") as textInfo:
 
 import psycopg2
 conct = psycopg2.connect(
-    database = str(loginInfo[0]),
-    user = str(loginInfo[1]), 
-    password = str(loginInfo[2]),
-    host = str(loginInfo[3]),
-    port = str(loginInfo[4])
+   database = loginInfo[0],
+   user = loginInfo[1], 
+   password = loginInfo[2],
+   host = loginInfo[3],
+   port = loginInfo[4]
 )
 
 print('Connection Successful')
@@ -51,51 +54,53 @@ cur = conct.cursor()
 
 
 def makeIDTableEntry():
-    cur.execute(f"""
-    INSERT INTO "playlistIDs" (playlist_name,song_count) 
-    VALUES (null,null)
-    """)
-    print("Entry Made")
+   cur.execute(f"""
+   INSERT INTO "playlistIDs" (playlist_name,song_count,last_update) 
+   VALUES (null,null,null)
+   """)
+   print("Entry Made")
 
 
 def makeNewTable(tableID: str) -> str:
-    tableID = cur.execute("""
-    SELECT "id" FROM "playlistIDs"
-    ORDER BY "id" DESC 
-    LIMIT 1;
-    """)
-    tableID = (str(cur.fetchone())).replace(",","").replace("(","").replace(")","")
-    cur.execute(f"""CREATE TABLE "{'playlist'+tableID}" (
-        ID serial not null primary key,
-        song_name varchar not null,
-        song_artist varchar not null
-        )"""
-    )
-    print("Table Made")
-    return(tableID)
+   tableID = cur.execute("""
+   SELECT "id" FROM "playlistIDs"
+   ORDER BY "id" DESC 
+   LIMIT 1;
+   """)
+   tableID = (str(cur.fetchone())).replace(",","").replace("(","").replace(")","")
+   cur.execute(f"""CREATE TABLE "{'playlist'+tableID}" (
+      ID serial not null primary key,
+      song_name varchar not null,
+      artist varchar not null
+      )"""
+   )
+   print("Table Made")
+   return(tableID)
 
 
 def playlistScraper(playlistLink: str) -> list:
-    api = SoundcloudAPI()
-    playlist = api.resolve(playlistLink)
-    assert type(playlist) is Playlist
-    for track in playlist.tracks:
-        yield(track)
-    print("Table Populated")
+   api = SoundcloudAPI()
+   playlist = api.resolve(playlistLink)
+   assert type(playlist) is Playlist
+   for track in playlist.tracks:
+      yield(track)
+   print("Table Populated")
 
 
 def updateIDTable(playlistLink: str, tableID: str):
-    api = SoundcloudAPI()
-    playlist = api.resolve(playlistLink)
-    assert type(playlist) is Playlist
-    playlistName = str(playlist.title)
-    songCount = int(playlist.track_count)
-    cur.execute(f"""
-    UPDATE "playlistIDs"
-    SET playlist_name = '{playlistName}', song_count = {songCount}
-    WHERE id = {tableID}
-    """)
-    print("ID Table Updated")
+   api = SoundcloudAPI()
+   playlist = api.resolve(playlistLink)
+   assert type(playlist) is Playlist
+   playlistName = str(playlist.title)
+   songCount = int(playlist.track_count)
+   todaysDate = str(date.today()).split("-")
+   todaysDate = todaysDate[1] + "/" + todaysDate [2] + "/" + todaysDate[0]
+   cur.execute(f"""
+   UPDATE "playlistIDs"
+	SET playlist_name = '{playlistName}', song_count = {songCount}, last_update = '{todaysDate}'
+   WHERE id = {tableID}
+   """)
+   print("ID Table Updated")
 
 
 
@@ -110,14 +115,15 @@ def updateIDTable(playlistLink: str, tableID: str):
 #                      |_|           #
 ######################################
 
+
 if __name__ == "__main__":
-    makeIDTableEntry()
-    tableID = makeNewTable(playlistLink)
-    for a in playlistScraper(playlistLink):
-        cur.execute(f"""
-        INSERT INTO {'playlist'+tableID} (song_name,song_artist) 
-        VALUES ('{(a.title).replace("'","")}','{(a.artist).replace("'","")}');
-        """)
-    updateIDTable(playlistLink, tableID)
-    conct.commit()
-    conct.close()
+   makeIDTableEntry()
+   tableID = makeNewTable(playlistLink)
+   for a in playlistScraper(playlistLink):
+      cur.execute(f"""
+      INSERT INTO {'playlist'+tableID} (song_name,artist) 
+      VALUES ('{(a.title).replace("'","")}','{(a.artist).replace("'","")}');
+      """)
+   updateIDTable(playlistLink, tableID)
+   conct.commit()
+   conct.close()

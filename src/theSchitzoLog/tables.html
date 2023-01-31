@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <title>The Schizo Log</title>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link type="text/css" href="css/home.css" rel="stylesheet">
+        <link type="text/css" href="css/style.css" rel="stylesheet">
+
         <script src="js/dropdown.js" defer></script>
-        <script src="py/databaseAccess.py"></script>
-        <title>The Schizo Log</title>
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="module" src="js/databaseAccess.js" defer></script>
     </head>
     <body>
         <div class="navbar">    
             <div class="navbar-left">
-                <a href="index.html">
-                    <img class="logo-resize" src="media/catbonk.gif"></img>
+                <a href="home.html">
+                    <img class="logo-resize" src="media/catbonk.gif">
                 </a>
                 <div class="dropdown" data-dropdown>
                     <button class="navbar-item" data-dropdown-button>Playlists</button>
@@ -54,8 +56,27 @@
             </div>
             <div class="navbar-right">The Schizo Log</div>
         </div>
-        <div class="table">
-            
+        <div class="break">
+        </div>
+        <div style="width: 100%; height: 550px; overflow: auto;">
+            <table style="width: 95%;">
+                <thead style="font-size: 16pt;">
+                    <tr>
+                        <th style="width: 5%;">
+                            <input type="text" class="search-input" placeholder="Id">
+                        </th>
+                        <th>
+                            <input type="text" class="search-input" placeholder="Song Name">
+                        </th>
+                        <th style="width: 40%;">
+                            <input type="text" class="search-input" placeholder="Artist">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="table-data" style="font-size: 12pt;">
+                    <!-- Populated By databaseAccess.js -->
+                </tbody>
+            </table>
         </div>
     </body>
 </html>

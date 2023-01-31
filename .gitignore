@@ -1,10 +1,13 @@
-loginLink.txt
-loginInfo.txt
+<<<<<<< HEAD
+src/loginInfo.txt
+src/link.txt
 basePage.html
 package-lock.json
 package.json
 node_modules
-test.py
+=======
+loginInfo.txt
+>>>>>>> parent of 01fc033 (intermediate push)
 
 Skip to content
 Search or jump to…

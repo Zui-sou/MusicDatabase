@@ -1,12 +1,54 @@
-body {
+body{
     margin: 0;
     background-color: #f2eee4;
 }
 
-/* Image Stuff */
+<<<<<<< HEAD:src/theSchitzoLog/css/style.css
+/* Table Stuff */
+table {
+    border-collapse: collapse;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #aab1ad;
+}
+table,
+th,
+td {
+    color: inherit;
+    border: 1px solid #aab1ad;
+    padding-left: 4px;
+}
+
+thead,
+tfoot {
+    color: inherit;
+    margin-top: 2rem;
+}
+
+.search-input{
+    background: none;
+    border: none;
+    text-decoration: none;
+    color: #2e302f;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+}
+
+
+/* Oddities */
 .logo-resize {
+=======
+/* Image Stuff */
+.resize {
+>>>>>>> parent of 01fc033 (intermediate push):theSchitzoLog/css/home.css
     width: 50px;
     height: auto;
+}
+
+.break{
+    padding-top: 2rem;
 }
 
 /* Navbar */
@@ -30,7 +72,7 @@ body {
     flex-direction: row;
 }
 
-.navbar-item {
+.navbar-item{
     background: none;
     border: none;
     text-decoration: none;
