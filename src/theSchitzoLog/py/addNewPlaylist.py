@@ -1,9 +1,11 @@
 from sclib import SoundcloudAPI, Playlist
 from datetime import date
-import psycopg2
+import pg8000 as pg
 
 
 playlistLink = str(input(f'Gib Link\n >> '))
+
+
 
 ####################################################
 #    _____        _        _                       #
@@ -30,7 +32,7 @@ client = psycopg2.connect(
 )
 """
 
-client = psycopg2.connect(
+client = pg.connect(
    database = "postgres",
    user = "postgres", 
    password = "123",
@@ -39,6 +41,8 @@ client = psycopg2.connect(
 ).cursor()
 
 print('Connection Successful')
+
+
 
 #############################################################
 #    ______                    _    _                       #
