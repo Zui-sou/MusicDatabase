@@ -5,17 +5,17 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link type="text/css" href="css/style.css" rel="stylesheet">
+        <link type="text/css" href="./css/style.css" rel="stylesheet">
 
+        <!-- Js Stuff -->
         <script src="js/dropdown.js" defer></script>
-        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script type="module" src="js/databaseAccess.js" defer></script>
+
     </head>
     <body>
         <div class="navbar">    
             <div class="navbar-left">
                 <a href="home.html">
-                    <img class="logo-resize" src="media/catbonk.gif">
+                    <img class="resize" src="media/catbonk.gif">
                 </a>
                 <div class="dropdown" data-dropdown>
                     <button class="navbar-item" data-dropdown-button>Playlists</button>
@@ -23,7 +23,7 @@
                         <div>
                             <div class="dropdown-heading">New And Improved</div>
                             <div class="dropdown-links">
-                                <a href="#">New and Improved</a>
+                                <a href="tables.html">New and Improved</a>
                                 <a href="#">New and Improved 2.0</a>
                                 <a href="#">Part 3 The Sequal No One Wanted</a>
                                 <a href="#">Brothers in Songs, Part 4</a>
@@ -73,8 +73,8 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody id="table-data" style="font-size: 12pt;">
-                    <!-- Populated By databaseAccess.js -->
+                <tbody id="tableData" style="font-size: 12pt;">
+                    <!-- Populated with Something -->
                 </tbody>
             </table>
         </div>

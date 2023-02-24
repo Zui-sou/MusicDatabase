@@ -1,23 +1,14 @@
 const {Client} = require('pg')
-const fs = require('fs')
-const $ = require('jquery')
 
-
-/////////////////////////////////////////////////////////////
-//   __      __           _         _      _               //
-//   \ \    / /          (_)       | |    | |              //
-//    \ \  / /__ _  _ __  _   __ _ | |__  | |  ___  ___    //
-//     \ \/ // _` || '__|| | / _` || '_ \ | | / _ \/ __|   //
-//      \  /| (_| || |   | || (_| || |_) || ||  __/\__ \   //
-//       \/  \__,_||_|   |_| \__,_||_.__/ |_| \___||___/   //
-//                                                         //
-/////////////////////////////////////////////////////////////
-
-var loginLink = fs.readFileSync("link.txt").toString();
-var client = new Client(loginLink)
+//var loginLink = fs.readFileSync("").toString();
+var client = new Client("postgresql://postgres:123@localhost:5432/postgres")
 var currentPlaylist = "playlist1"
 
-
+/*
+fetch("link1.txt")
+.then(res => res.text)
+.then(text => console.log(text))
+*/
 ///////////////////////////////////////////////////////////////
 //    ______                    _    _                       //
 //   |  ____|                  | |  (_)                      //
@@ -32,24 +23,26 @@ function errorMessage(err){
     console.log(`Something Fucked Up\n\n${err}`)
 }
 
-/*
-async function getData() {
-
-
-        await client.connect()
-        console.log("Connected")
-        const playlist = await client.query(`select * from ${currentPlaylist}`)
-        console.table(playlist.rows)
-        let out = "";
-        for(let i = 0; i < playlist.rowCount; i++) {
-            out += `
-                <tr>
-                    <td>${playlist.rows[i].id}</td>
-                    <td>${playlist.rows[i].song_name}</td>
-                    <td>${playlist.rows[i].artist}</td>
-                </tr>
+let out = ``;
+function getData() {
+    client.connect()
+    .then(() => client.query (`select * from ${currentPlaylist}`))
+    .then(data => {for(let i = 0; i < data.rowCount; i++) {
+        out += `
+            <tr>
+                <td>${data.rows[i].id}</td>
+                <td>${data.rows[i].song_name}</td>
+                <td>${data.rows[i].artist}</td>
+            </tr>
             `
-*/
+        }
+    })
+//    .then(() => document.getElementById("tableData").innerHTML = out)
+    .then(() => console.log(out))
+    .catch(err => errorMessage(err))
+    .finally(() => client.end())
+}
+
 /////////////////////////////////////////////
 //     _____              _         _      //
 //    / ____|            (_)       | |     //
@@ -61,24 +54,4 @@ async function getData() {
 //                          |_|            //
 /////////////////////////////////////////////
 
-/*
-await fs.readFile('loginInfo.json', 'utf8', (err, fileData) => {
-    if (err) {
-        errorMessage(err)
-        return
-    }
-    loginLink = JSON.stringify(JSON.parse(fileData).link)
-    console.log(loginLink)
-    return loginLink
-})
-*/
-
-$(document).ready(function(){
-    alert("amit")
- });
-
-client.connect()
-.then(() => client.query (`select * from ${currentPlaylist}`))
-.then(results => console.table(results.rows))
-.catch(err => errorMessage(err))
-.finally(() => client.end())
+getData()

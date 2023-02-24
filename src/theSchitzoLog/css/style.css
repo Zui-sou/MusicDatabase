@@ -3,7 +3,6 @@ body{
     background-color: #f2eee4;
 }
 
-<<<<<<< HEAD:src/theSchitzoLog/css/style.css
 /* Table Stuff */
 table {
     border-collapse: collapse;
@@ -37,12 +36,8 @@ tfoot {
 }
 
 
-/* Oddities */
-.logo-resize {
-=======
 /* Image Stuff */
 .resize {
->>>>>>> parent of 01fc033 (intermediate push):theSchitzoLog/css/home.css
     width: 50px;
     height: auto;
 }

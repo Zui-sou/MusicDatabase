@@ -1,15 +1,9 @@
 from sclib import SoundcloudAPI, Playlist
 from datetime import date
 import psycopg2
-import json
 
 
 playlistLink = str(input(f'Gib Link\n >> '))
-tableID = str
-playlistName = str
-songCount = int
-
-
 
 ####################################################
 #    _____        _        _                       #
@@ -26,35 +20,39 @@ with open('loginInfo.txt', "r") as textInfo:
     loginInfo = textInfo.readlines()
     for a in enumerate(loginInfo):
         loginInfo[a[0]] = loginInfo[a[0]].replace("\n", "")
-
-import psycopg2
-conct = psycopg2.connect(
+"""
+client = psycopg2.connect(
    database = loginInfo[0],
    user = loginInfo[1], 
    password = loginInfo[2],
    host = loginInfo[3],
    port = loginInfo[4]
 )
+"""
+
+client = psycopg2.connect(
+   database = "postgres",
+   user = "postgres", 
+   password = "123",
+   host = "localhost",
+   port = "5432"
+).cursor()
 
 print('Connection Successful')
 
-cur = conct.cursor()
-
-
-
-#####################################################
-#    ______                _   _                    #
-#   |  ____|              | | (_)                   #
-#   | |__ _   _ _ __   ___| |_ _  ___  _ __  ___    #
-#   |  __| | | | '_ \ / __| __| |/ _ \| '_ \/ __|   #
-#   | |  | |_| | | | | (__| |_| | (_) | | | \__ \   #
-#   |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/   #
-#                                                   #
-#####################################################
+#############################################################
+#    ______                    _    _                       #
+#   |  ____|                  | |  (_)                      #
+#   | |__  _   _  _ __    ___ | |_  _   ___   _ __   ___    #
+#   |  __|| | | || '_ \  / __|| __|| | / _ \ | '_ \ / __|   #
+#   | |   | |_| || | | || (__ | |_ | || (_) || | | |\__ \   #
+#   |_|    \__,_||_| |_| \___| \__||_| \___/ |_| |_||___/   #
+#                                                           #
+#############################################################
 
 
 def makeIDTableEntry():
-   cur.execute(f"""
+   client.execute(f"""
    INSERT INTO "playlistIDs" (playlist_name,song_count,last_update) 
    VALUES (null,null,null)
    """)
@@ -62,13 +60,13 @@ def makeIDTableEntry():
 
 
 def makeNewTable(tableID: str) -> str:
-   tableID = cur.execute("""
+   tableID = client.execute("""
    SELECT "id" FROM "playlistIDs"
    ORDER BY "id" DESC 
    LIMIT 1;
    """)
-   tableID = (str(cur.fetchone())).replace(",","").replace("(","").replace(")","")
-   cur.execute(f"""CREATE TABLE "{'playlist'+tableID}" (
+   tableID = (str(client.fetchone())).replace(",","").replace("(","").replace(")","")
+   client.execute(f"""CREATE TABLE "{'playlist'+tableID}" (
       ID serial not null primary key,
       song_name varchar not null,
       artist varchar not null
@@ -95,7 +93,7 @@ def updateIDTable(playlistLink: str, tableID: str):
    songCount = int(playlist.track_count)
    todaysDate = str(date.today()).split("-")
    todaysDate = todaysDate[1] + "/" + todaysDate [2] + "/" + todaysDate[0]
-   cur.execute(f"""
+   client.execute(f"""
    UPDATE "playlistIDs"
 	SET playlist_name = '{playlistName}', song_count = {songCount}, last_update = '{todaysDate}'
    WHERE id = {tableID}
@@ -120,10 +118,10 @@ if __name__ == "__main__":
    makeIDTableEntry()
    tableID = makeNewTable(playlistLink)
    for a in playlistScraper(playlistLink):
-      cur.execute(f"""
+      client.execute(f"""
       INSERT INTO {'playlist'+tableID} (song_name,artist) 
       VALUES ('{(a.title).replace("'","")}','{(a.artist).replace("'","")}');
       """)
    updateIDTable(playlistLink, tableID)
-   conct.commit()
-   conct.close()
+   client.commit()
+   client.close()
